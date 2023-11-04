@@ -1,25 +1,20 @@
-const express = require('express')
+const express = require("express");
+const mode = require("../../controllers/contactMode");
+const validateMethod = require("../../middlewares");
+const { ValidationSchema, PatchSchema } = require("../../schemas/Validation");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/", mode.getAll);
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/:contactId", mode.getById);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.post("/", validateMethod(ValidationSchema), mode.postItem);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.delete("/:contactId", mode.deleteItem);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.put("/:contactId", validateMethod(ValidationSchema), mode.putItem);
 
-module.exports = router
+router.patch("/:contactId", validateMethod(PatchSchema), mode.patchItem);
+
+module.exports = router;
