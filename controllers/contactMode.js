@@ -20,7 +20,15 @@ async function getById(req, res, __) {
 }
 
 async function postItem(req, res, __) {
-  const answer = await Contact.create(req.body);
+  const { body } = req;
+  const data = await Contact.find();
+  const isNameExist = data.map((i) => i.name).includes(body.name);
+
+  if (isNameExist) {
+    throw HttpError(400, "That name is already exist");
+  }
+
+  const answer = await Contact.create(body);
   return res.status(201).json(answer);
 }
 
@@ -37,7 +45,8 @@ async function deleteItem(req, res, __) {
 
 async function putItem(req, res, __) {
   const { contactId } = req.params;
-  const answer = await Contact.findByIdAndUpdate(contactId, req.body, {
+  const { body } = req;
+  const answer = await Contact.findByIdAndUpdate(contactId, body, {
     new: true,
   });
 

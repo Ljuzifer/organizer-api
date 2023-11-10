@@ -10,7 +10,7 @@ router.get("/", parseJSON, mode.getAll);
 
 router.get("/:contactId", parseJSON, isValidId, mode.getById);
 
-router.post("/", validateMethod(ValidationSchema), mode.postItem);
+router.post("/", parseJSON, validateMethod(ValidationSchema), mode.postItem);
 
 router.delete("/:contactId", isValidId, mode.deleteItem);
 
