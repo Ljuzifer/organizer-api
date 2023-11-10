@@ -8,7 +8,7 @@ const parseJSON = express.json();
 
 router.get("/", parseJSON, mode.getAll);
 
-router.get("/:contactId", isValidId, parseJSON, mode.getById);
+router.get("/:contactId", parseJSON, isValidId, mode.getById);
 
 router.post("/", validateMethod(ValidationSchema), mode.postItem);
 
@@ -16,13 +16,15 @@ router.delete("/:contactId", isValidId, mode.deleteItem);
 
 router.put(
   "/:contactId",
+  parseJSON,
   isValidId,
   validateMethod(ValidationSchema),
   mode.putItem,
 );
 
 router.patch(
-  "/:contactId",
+  "/:contactId/favorite",
+  parseJSON,
   isValidId,
   validateMethod(PatchSchema),
   mode.patchItem,
