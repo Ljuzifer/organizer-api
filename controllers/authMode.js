@@ -71,10 +71,10 @@ async function current(req, res) {
 }
 
 async function subscription(req, res) {
-    const { userId } = req.params;
+    const { _id } = req.user;
     const { body } = req;
 
-    const answer = await User.findByIdAndUpdate(userId, body, { new: true });
+    const answer = await User.findByIdAndUpdate(_id, body, { new: true });
     if (!answer) {
         throw HttpError(404);
     }

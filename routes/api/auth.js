@@ -24,7 +24,7 @@ router.post("/logout", parseJSON, authentication, mode.logout);
 router.get("/current", parseJSON, authentication, mode.current);
 
 router.patch(
-    "/:userId/subscription",
+    "/",
     parseJSON,
     authentication,
     validateMethod(SubscriptionSchema),
