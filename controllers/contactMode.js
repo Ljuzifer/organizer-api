@@ -3,18 +3,22 @@ const Contact = require("../models/contact");
 const { HttpError, ControllerWrap } = require("../helpers");
 
 async function getAll(req, res, __) {
-    const { favorite } = req.params;
-    console.log(favorite);
     const { _id: owner } = req.user;
-    const { page = 0, limit = 0 } = req.query;
+    const { page = 0, limit = 0, favorite } = req.query;
+
+    const query = { owner };
+    if (favorite !== undefined) {
+        query.favorite = favorite;
+    }
     const skip = (page - 1) * limit;
 
-    const answer = await Contact.find({ owner }, "-createdAt -updatedAt -__v", {
+    const answer = await Contact.find(query, "-createdAt -updatedAt -__v", {
         skip,
         limit,
     })
         .populate("owner", "name email")
         .exec();
+
     res.json(answer);
 }
 
