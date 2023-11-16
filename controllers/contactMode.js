@@ -6,11 +6,12 @@ async function getAll(req, res, __) {
     const { _id: owner } = req.user;
     const { page = 0, limit = 0, favorite } = req.query;
 
+    const skip = (page - 1) * limit;
     const query = { owner };
+
     if (favorite !== undefined) {
         query.favorite = favorite;
     }
-    const skip = (page - 1) * limit;
 
     const answer = await Contact.find(query, "-createdAt -updatedAt -__v", {
         skip,
