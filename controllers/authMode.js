@@ -22,6 +22,7 @@ async function registration(req, res) {
     res.status(201).json({
         name: answer.name,
         email: answer.email,
+        subscription: answer.subscription,
     });
 }
 
@@ -44,14 +45,32 @@ async function login(req, res) {
         name: user.name,
     };
     const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: "1w" });
+    await User.findByIdAndUpdate(user._id, { token });
 
-    res.json({ token });
+    res.json({
+        token,
+        user: { email: user.email, subscription: user.subscription },
+    });
 }
 
-async function logout(req, res) {}
+async function logout(req, res) {
+    const { _id } = req.user;
+    await User.findByIdAndUpdate(_id, { token: null });
+
+    res.status(204).json({
+        message: "Logout successfull",
+    });
+}
+
+async function current(req, res) {
+    const { name, email, subscription } = req.user;
+
+    res.json({ name, email, subscription });
+}
 
 module.exports = {
     registration: ControllerWrap(registration),
     login: ControllerWrap(login),
     logout: ControllerWrap(logout),
+    current: ControllerWrap(current),
 };
