@@ -20,9 +20,11 @@ async function registration(req, res) {
     const answer = await User.create({ ...req.body, password: hashedPassword });
 
     res.status(201).json({
-        name: answer.name,
-        email: answer.email,
-        subscription: answer.subscription,
+        user: {
+            // name: answer.name,
+            email: answer.email,
+            subscription: answer.subscription,
+        },
     });
 }
 
@@ -63,9 +65,9 @@ async function logout(req, res) {
 }
 
 async function current(req, res) {
-    const { name, email, subscription } = req.user;
+    const { email, subscription } = req.user;
 
-    res.json({ name, email, subscription });
+    res.json({ email, subscription });
 }
 
 async function subscription(req, res) {

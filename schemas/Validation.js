@@ -29,7 +29,7 @@ const PatchSchema = Joi.object({
 });
 
 const RegisterSchema = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string(),
     email: Joi.string().email(),
     password: Joi.string().min(6).required(),
     subscription: Joi.string()
