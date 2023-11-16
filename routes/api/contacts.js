@@ -1,21 +1,32 @@
 const express = require("express");
 const mode = require("../../controllers/contactMode");
-const { isValidId, validateMethod } = require("../../middlewares");
+const {
+  isValidId,
+  validateMethod,
+  authentication,
+} = require("../../middlewares");
 const { ValidationSchema, PatchSchema } = require("../../schemas/Validation");
 
 const router = express.Router();
 const parseJSON = express.json();
 
-router.get("/", parseJSON, mode.getAll);
+router.get("/", authentication, parseJSON, mode.getAll);
 
-router.get("/:contactId", parseJSON, isValidId, mode.getById);
+router.get("/:contactId", authentication, parseJSON, isValidId, mode.getById);
 
-router.post("/", parseJSON, validateMethod(ValidationSchema), mode.postItem);
+router.post(
+  "/",
+  authentication,
+  parseJSON,
+  validateMethod(ValidationSchema),
+  mode.postItem,
+);
 
-router.delete("/:contactId", isValidId, mode.deleteItem);
+router.delete("/:contactId", authentication, isValidId, mode.deleteItem);
 
 router.put(
   "/:contactId",
+  authentication,
   parseJSON,
   isValidId,
   validateMethod(ValidationSchema),
@@ -24,6 +35,7 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
+  authentication,
   parseJSON,
   isValidId,
   validateMethod(PatchSchema),

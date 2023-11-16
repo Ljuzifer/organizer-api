@@ -7,15 +7,17 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Set your name"],
     },
-    password: {
-      type: String,
-      required: [true, "Set password for user"],
-    },
+
     email: {
       type: String,
       required: [true, "Email is required"],
       index: true,
       unique: true,
+    },
+    password: {
+      type: String,
+      minLength: [6, "Password must be minimum of six symbols"],
+      required: [true, "Set password for user"],
     },
     subscription: {
       type: String,
