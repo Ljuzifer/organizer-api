@@ -68,9 +68,22 @@ async function current(req, res) {
     res.json({ name, email, subscription });
 }
 
+async function subscription(req, res) {
+    const { userId } = req.params;
+    const { body } = req;
+
+    const answer = await User.findByIdAndUpdate(userId, body, { new: true });
+    if (!answer) {
+        throw HttpError(404);
+    }
+
+    res.json(answer);
+}
+
 module.exports = {
     registration: ControllerWrap(registration),
     login: ControllerWrap(login),
     logout: ControllerWrap(logout),
     current: ControllerWrap(current),
+    subscription: ControllerWrap(subscription),
 };

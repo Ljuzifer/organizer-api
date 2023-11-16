@@ -1,6 +1,10 @@
 const { Router, json } = require("express");
 const mode = require("../../controllers/authMode");
-const { RegisterSchema, LoginSchema } = require("../../schemas/Validation");
+const {
+    RegisterSchema,
+    LoginSchema,
+    SubscriptionSchema,
+} = require("../../schemas/Validation");
 const { validateMethod, authentication } = require("../../middlewares");
 
 const router = Router();
@@ -18,5 +22,13 @@ router.post("/login", parseJSON, validateMethod(LoginSchema), mode.login);
 router.post("/logout", parseJSON, authentication, mode.logout);
 
 router.get("/current", parseJSON, authentication, mode.current);
+
+router.patch(
+    "/:userId/subscription",
+    parseJSON,
+    authentication,
+    validateMethod(SubscriptionSchema),
+    mode.subscription,
+);
 
 module.exports = router;
