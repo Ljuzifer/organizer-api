@@ -7,10 +7,10 @@ const router = Router();
 const parseJSON = json();
 
 router.post(
-  "/registration",
-  parseJSON,
-  validateMethod(RegisterSchema),
-  mode.registration,
+    "/registration",
+    parseJSON,
+    validateMethod(RegisterSchema),
+    mode.registration,
 );
 
 router.post("/login", parseJSON, validateMethod(LoginSchema), mode.login);
