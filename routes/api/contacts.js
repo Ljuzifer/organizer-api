@@ -1,33 +1,61 @@
 const express = require("express");
 const mode = require("../../controllers/contactMode");
-const { isValidId, validateMethod } = require("../../middlewares");
+const {
+    isValidId,
+    validateMethod,
+    authentication,
+    ownerChecker,
+} = require("../../middlewares");
 const { ValidationSchema, PatchSchema } = require("../../schemas/Validation");
 
 const router = express.Router();
 const parseJSON = express.json();
 
-router.get("/", parseJSON, mode.getAll);
+router.get("/", parseJSON, authentication, mode.getAll);
 
-router.get("/:contactId", parseJSON, isValidId, mode.getById);
+router.get(
+    "/:contactId",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.getById,
+);
 
-router.post("/", parseJSON, validateMethod(ValidationSchema), mode.postItem);
+router.post(
+    "/",
+    parseJSON,
+    authentication,
+    validateMethod(ValidationSchema),
+    mode.postItem,
+);
 
-router.delete("/:contactId", isValidId, mode.deleteItem);
+router.delete(
+    "/:contactId",
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.deleteItem,
+);
 
 router.put(
-  "/:contactId",
-  parseJSON,
-  isValidId,
-  validateMethod(ValidationSchema),
-  mode.putItem,
+    "/:contactId",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    validateMethod(ValidationSchema),
+    mode.putItem,
 );
 
 router.patch(
-  "/:contactId/favorite",
-  parseJSON,
-  isValidId,
-  validateMethod(PatchSchema),
-  mode.patchItem,
+    "/:contactId/favorite",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    validateMethod(PatchSchema),
+    mode.patchItem,
 );
 
 module.exports = router;

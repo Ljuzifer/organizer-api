@@ -1,7 +1,11 @@
 const validateMethod = require("./validateMethod");
 const isValidId = require("./isValidId");
+const authentication = require("./authentication");
+const ownerChecker = require("./ownerChecker");
 
 module.exports = {
-  validateMethod,
-  isValidId,
+    validateMethod,
+    isValidId,
+    authentication,
+    ownerChecker,
 };
