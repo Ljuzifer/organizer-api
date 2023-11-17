@@ -4,6 +4,7 @@ const {
     isValidId,
     validateMethod,
     authentication,
+    ownerChecker,
 } = require("../../middlewares");
 const { ValidationSchema, PatchSchema } = require("../../schemas/Validation");
 
@@ -12,7 +13,14 @@ const parseJSON = express.json();
 
 router.get("/", parseJSON, authentication, mode.getAll);
 
-router.get("/:contactId", parseJSON, authentication, isValidId, mode.getById);
+router.get(
+    "/:contactId",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.getById,
+);
 
 router.post(
     "/",
@@ -22,13 +30,20 @@ router.post(
     mode.postItem,
 );
 
-router.delete("/:contactId", authentication, isValidId, mode.deleteItem);
+router.delete(
+    "/:contactId",
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.deleteItem,
+);
 
 router.put(
     "/:contactId",
     parseJSON,
     authentication,
     isValidId,
+    ownerChecker,
     validateMethod(ValidationSchema),
     mode.putItem,
 );
@@ -38,6 +53,7 @@ router.patch(
     parseJSON,
     authentication,
     isValidId,
+    ownerChecker,
     validateMethod(PatchSchema),
     mode.patchItem,
 );
