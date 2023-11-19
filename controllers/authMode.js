@@ -97,11 +97,11 @@ async function subscription(req, res) {
 async function updAvatar(req, res) {
     const { _id } = req.user;
     const { path: tempUpload, originalname } = req.file;
-    const filename = `${_id}_${originalname}`;
 
     const ava = await Jimp.read(tempUpload);
-    ava.resize(250, 250).quality(60).write(filename);
+    ava.resize(250, 250).quality(60).write(path.join(tempUpload));
 
+    const filename = `${_id}_${originalname}`;
     const resUpload = path.join(avatarPath, filename);
 
     await fs.rename(tempUpload, resUpload);
