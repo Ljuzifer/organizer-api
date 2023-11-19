@@ -5,7 +5,7 @@ const {
     LoginSchema,
     SubscriptionSchema,
 } = require("../../schemas/Validation");
-const { validateMethod, authentication } = require("../../middlewares");
+const { validateMethod, authentication, upload } = require("../../middlewares");
 
 const router = Router();
 const parseJSON = json();
@@ -29,6 +29,14 @@ router.patch(
     authentication,
     validateMethod(SubscriptionSchema),
     mode.subscription,
+);
+
+router.patch(
+    "/avatar",
+    parseJSON,
+    authentication,
+    upload.single("avatar"),
+    mode.updAvatar,
 );
 
 module.exports = router;
