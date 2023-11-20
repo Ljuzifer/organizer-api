@@ -2,6 +2,7 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
+const multer = require("multer");
 
 const { authRouter, contactsRouter } = require("./routes/api");
 
@@ -22,7 +23,12 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    res.status(err.status).json({ message: err.message });
+    if (err instanceof multer.MulterError) {
+        if (err.message === "Unexpected field") {
+            res.status(400).json({ message: "Field must be named -avatar-" });
+        }
+    }
+    res.status(500).json({ message: err.message });
 });
 
 module.exports = app;
