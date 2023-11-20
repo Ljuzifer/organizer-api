@@ -39,4 +39,6 @@ router.patch(
     mode.updAvatar,
 );
 
+router.delete("/", mode.removeUser);
+
 module.exports = router;

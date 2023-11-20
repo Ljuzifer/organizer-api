@@ -4,7 +4,7 @@ const User = require("../models/user");
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
 const path = require("path");
-const fs = require("fs/promises");
+const fs = require("node:fs/promises");
 const { HttpError, ControllerWrap } = require("../helpers");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
@@ -95,6 +95,10 @@ async function subscription(req, res) {
 }
 
 async function updAvatar(req, res) {
+    if (!req.file) {
+        throw HttpError(400, "Avatar must be provided");
+    }
+
     const { _id } = req.user;
     const { path: tempUpload, originalname } = req.file;
 
@@ -113,6 +117,15 @@ async function updAvatar(req, res) {
     res.json({ avatarURL });
 }
 
+const removeUser = async (req, res) => {
+    const removedUser = await User.findOneAndDelete({ email: req.query.email });
+    if (!removedUser) {
+        throw HttpError(404);
+    }
+
+    res.json({ message: "User credentials removed successfull!" });
+};
+
 module.exports = {
     registration: ControllerWrap(registration),
     login: ControllerWrap(login),
@@ -120,4 +133,5 @@ module.exports = {
     current: ControllerWrap(current),
     subscription: ControllerWrap(subscription),
     updAvatar: ControllerWrap(updAvatar),
+    removeUser: ControllerWrap(removeUser),
 };
