@@ -1,3 +1,4 @@
+// const gravatar = require("gravatar");
 const { Schema, model } = require("mongoose");
 const { MongooseError } = require("../helpers");
 
@@ -22,6 +23,13 @@ const userSchema = new Schema(
             type: String,
             enum: ["starter", "pro", "business"],
             default: "starter",
+        },
+        avatarURL: {
+            type: String,
+            required: true,
+            // default: function () {
+            //     return gravatar.url(this.email, { s: "250" }, true);
+            // },
         },
         token: {
             type: String,
