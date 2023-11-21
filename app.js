@@ -24,7 +24,6 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.log("This is the rejected field ->", err.field);
     if (err.field !== "avatar") {
         next(HttpError(400, "Field must be named -> avatar"));
     }

@@ -33,7 +33,6 @@ router.patch(
 
 router.patch(
     "/avatar",
-    // parseJSON,
     authentication,
     upload.single("avatar"),
     mode.updAvatar,
