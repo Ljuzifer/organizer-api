@@ -3,7 +3,7 @@ const logger = require("morgan");
 const cors = require("cors");
 const { HttpError } = require("./helpers");
 require("dotenv").config();
-// const multer = require("multer");
+const multer = require("multer");
 
 const { authRouter, contactsRouter } = require("./routes/api");
 
@@ -24,18 +24,11 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    if (err.field !== "avatar") {
-        next(HttpError(400, "Field must be named -> avatar"));
+    if (err instanceof multer.MulterError) {
+        if (err.message === "Unexpected field" || err.field !== "avatar") {
+            next(HttpError(400, "Field must be named -> avatar"));
+        }
     }
-    next();
-});
-
-app.use((err, req, res, next) => {
-    // if (err instanceof multer.MulterError) {
-    //     if (err.message === "Unexpected field") {
-    //         res.status(400).json({ message: "Field must be named -avatar-" });
-    //     }
-    // }
     res.status(err.status || 500).json({ message: err.message });
 });
 
