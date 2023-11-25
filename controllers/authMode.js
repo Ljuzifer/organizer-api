@@ -5,7 +5,8 @@ const gravatar = require("gravatar");
 const Jimp = require("jimp");
 const path = require("path");
 const fs = require("node:fs/promises");
-const { HttpError, ControllerWrap } = require("../helpers");
+const crypto = require("node:crypto");
+const { HttpError, ControllerWrap, EmailSender } = require("../helpers");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -24,12 +25,16 @@ async function registration(req, res) {
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     const avatarURL = gravatar.url(email);
+    const verificationToken = crypto.randomUUID();
 
     const answer = await User.create({
         ...req.body,
         password: hashedPassword,
         avatarURL,
+        verificationToken,
     });
+
+    await EmailSender(email, verificationToken);
 
     res.status(201).json({
         user: {
@@ -40,6 +45,45 @@ async function registration(req, res) {
     });
 }
 
+async function confirmEmail(req, res) {
+    const { verificationToken } = req.params;
+    const user = await User.findOne({ verificationToken });
+
+    if (!user) {
+        throw HttpError(404, "User not found or email was confirmed already");
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+        verify: true,
+        verificationToken: "",
+    });
+
+    res.json({ message: "Email was confirm successfull!" });
+}
+
+async function resendConfirmEmail(req, res) {
+    console.log(req.body);
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw HttpError(404, "User not found...");
+    }
+
+    if (user.verify) {
+        throw HttpError(401, "This email is verified already!");
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+        verify: true,
+        verificationToken: "",
+    });
+
+    await EmailSender(email, user.verificationToken);
+
+    res.json({ message: "Email was confirmed successfull!" });
+}
+
 // signin //
 async function login(req, res) {
     const { email, password } = req.body;
@@ -47,6 +91,10 @@ async function login(req, res) {
     const user = await User.findOne({ email });
     if (!user) {
         throw HttpError(401, "Email or password are incorrect");
+    }
+
+    if (!user.verify) {
+        throw HttpError(401, "Sorry, your email is not verified...");
     }
 
     const userPassword = bcrypt.compareSync(password, user.password);
@@ -128,6 +176,8 @@ const removeUser = async (req, res) => {
 
 module.exports = {
     registration: ControllerWrap(registration),
+    confirmEmail: ControllerWrap(confirmEmail),
+    resendConfirmEmail: ControllerWrap(resendConfirmEmail),
     login: ControllerWrap(login),
     logout: ControllerWrap(logout),
     current: ControllerWrap(current),
