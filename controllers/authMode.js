@@ -71,7 +71,7 @@ async function resendConfirmEmail(req, res) {
     }
 
     if (user.verify) {
-        throw HttpError(401, "This email is verified already!");
+        throw HttpError(400, "This email is verified already!");
     }
 
     await User.findByIdAndUpdate(user._id, {
