@@ -4,6 +4,7 @@ const {
     RegisterSchema,
     LoginSchema,
     SubscriptionSchema,
+    EmailSchema,
 } = require("../../schemas/Validation");
 const { validateMethod, authentication, upload } = require("../../middlewares");
 
@@ -15,6 +16,15 @@ router.post(
     parseJSON,
     validateMethod(RegisterSchema),
     mode.registration,
+);
+
+router.get("/verify/:verificationToken", mode.confirmEmail);
+
+router.post(
+    "/verify",
+    parseJSON,
+    validateMethod(EmailSchema),
+    mode.resendConfirmEmail,
 );
 
 router.post("/login", parseJSON, validateMethod(LoginSchema), mode.login);
