@@ -57,7 +57,7 @@ async function deleteItem(req, res, __) {
         throw HttpError(404, "Not found");
     }
 
-    res.json({ message: "Delete success!" });
+    res.status(200, "Delete success!").json(answer);
 }
 
 async function putItem(req, res, __) {

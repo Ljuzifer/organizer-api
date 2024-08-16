@@ -18,7 +18,7 @@ const ValidationSchema = Joi.object({
             Joi.string().pattern(/^\(\d{3}\) \d{7}$/),
             Joi.string().pattern(/^\(\d{3}\)-\d{7}$/),
             Joi.string().pattern(/^\d{3} \d{7}$/),
-            Joi.string().pattern(/^\d{3}-\d{7}$/),
+            Joi.string().pattern(/^\d{3}-\d{7}$/)
         )
         .required(),
     favorite: Joi.boolean(),
@@ -53,6 +53,14 @@ const EmailSchema = Joi.object({
     email: Joi.string().email().required(),
 });
 
+const TaskSchema = Joi.object({
+    text: Joi.string().required(),
+});
+
+const CompletedSchema = Joi.object({
+    completed: Joi.boolean().required(),
+});
+
 module.exports = {
     ValidationSchema,
     PatchSchema,
@@ -60,4 +68,6 @@ module.exports = {
     LoginSchema,
     SubscriptionSchema,
     EmailSchema,
+    TaskSchema,
+    CompletedSchema,
 };
