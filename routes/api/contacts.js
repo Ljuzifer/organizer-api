@@ -19,7 +19,7 @@ router.get(
     authentication,
     isValidId,
     ownerChecker,
-    mode.getById,
+    mode.getById
 );
 
 router.post(
@@ -27,7 +27,7 @@ router.post(
     parseJSON,
     authentication,
     validateMethod(ValidationSchema),
-    mode.postItem,
+    mode.postItem
 );
 
 router.delete(
@@ -35,17 +35,17 @@ router.delete(
     authentication,
     isValidId,
     ownerChecker,
-    mode.deleteItem,
+    mode.deleteItem
 );
 
-router.put(
+router.patch(
     "/:contactId",
     parseJSON,
     authentication,
     isValidId,
     ownerChecker,
     validateMethod(ValidationSchema),
-    mode.putItem,
+    mode.putItem
 );
 
 router.patch(
@@ -55,7 +55,7 @@ router.patch(
     isValidId,
     ownerChecker,
     validateMethod(PatchSchema),
-    mode.patchItem,
+    mode.patchItem
 );
 
 module.exports = router;

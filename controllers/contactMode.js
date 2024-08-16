@@ -1,5 +1,6 @@
 // const method = require("../models/contactsForJSON");
 const Contact = require("../models/contact");
+const gravatar = require("gravatar");
 const { HttpError, ControllerWrap } = require("../helpers");
 
 async function getAll(req, res, __) {
@@ -17,7 +18,7 @@ async function getAll(req, res, __) {
         skip,
         limit,
     })
-        .populate("owner", "name email")
+        .populate("owner", "name phone email")
         .exec();
 
     res.json(answer);
@@ -38,6 +39,7 @@ async function getById(req, res, __) {
 async function postItem(req, res, __) {
     const { body } = req;
     const { _id: owner } = req.user;
+
     const data = await Contact.find({ owner }).exec();
     const isNameExist = data.map((i) => i.name).includes(body.name);
 
@@ -45,7 +47,9 @@ async function postItem(req, res, __) {
         throw HttpError(400, "That name is already exist");
     }
 
-    const answer = await Contact.create({ ...body, owner });
+    const avatarURL = gravatar.url(body.name);
+    const answer = await Contact.create({ ...body, avatarURL, owner });
+
     return res.status(201).json(answer);
 }
 
@@ -60,6 +64,7 @@ async function deleteItem(req, res, __) {
     res.status(200, "Delete success!").json(answer);
 }
 
+// **** Don't used! ****
 async function putItem(req, res, __) {
     const { contactId } = req.params;
     const { body } = req;
@@ -73,6 +78,7 @@ async function putItem(req, res, __) {
 
     res.json(answer);
 }
+// ***********************
 
 async function patchItem(req, res, __) {
     const { contactId } = req.params;
@@ -80,7 +86,7 @@ async function patchItem(req, res, __) {
 
     const answer = await Contact.findByIdAndUpdate(contactId, body, {
         new: true,
-    });
+    }).exec();
 
     if (!answer) {
         throw HttpError(404, "Not found");

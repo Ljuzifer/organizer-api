@@ -8,7 +8,7 @@ const fs = require("node:fs/promises");
 const crypto = require("node:crypto");
 const { HttpError, ControllerWrap, EmailSender } = require("../helpers");
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const { JWT_SECRET_KEY } = process.env;
 
 const avatarPath = path.join(__dirname, "../", "public", "avatars");
 
@@ -16,6 +16,7 @@ const avatarPath = path.join(__dirname, "../", "public", "avatars");
 async function registration(req, res) {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).exec();
+    console.log(user);
 
     if (user) {
         throw HttpError(409, "This email is exist already");
@@ -29,17 +30,19 @@ async function registration(req, res) {
 
     const answer = await User.create({
         ...req.body,
+        verify: true,
         password: hashedPassword,
         avatarURL,
         verificationToken,
     });
 
-    await EmailSender(email, verificationToken);
+    // await EmailSender(email, verificationToken);
 
     res.status(201).json({
         user: {
-            // name: answer.name,
+            name: answer.name,
             email: answer.email,
+            avatarURL: answer.avatarURL,
             subscription: answer.subscription,
         },
     });
@@ -86,11 +89,10 @@ async function resendConfirmEmail(req, res) {
 
 // signin //
 async function login(req, res) {
-    const { email, password } = req.body;
-    const mail = email.toLowerCase();
+    const { email: mail, password } = req.body;
+    const email = mail.toLowerCase();
 
-    const user = await User.findOne({ mail });
-    console.log(user);
+    const user = await User.findOne({ email });
 
     if (!user) {
         throw HttpError(401, "Email or password are incorrect");
@@ -133,9 +135,9 @@ async function logout(req, res) {
 }
 
 async function current(req, res) {
-    const { name, email, subscription } = req.user;
+    const { name, email, avatarURL: avatar, subscription } = req.user;
 
-    res.json({ name, email, subscription });
+    res.json({ user: { name, email, avatar, subscription } });
 }
 
 async function subscription(req, res) {

@@ -4,8 +4,6 @@ const LocaleDate = () => {
         day: "numeric",
         month: "numeric",
         year: "numeric",
-        // timeZone: "Europe/Kiev",
-        // timeZoneName: "short",
     };
     const formattedDate = currentDate.toLocaleDateString("uk-UA", options);
     return formattedDate;

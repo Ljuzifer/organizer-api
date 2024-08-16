@@ -24,7 +24,7 @@ const contactSchema = new Schema(
         },
         avatarURL: {
             type: String,
-            // required: true,
+            required: true,
             // default: defaultAvatar,
             // default: function () {
             //     const trimmedName = this.name.trim().toLowerCase();
@@ -39,7 +39,7 @@ const contactSchema = new Schema(
         owner: {
             type: Schema.Types.ObjectId,
             ref: "user",
-            required: "true",
+            required: true,
         },
     },
     { versionKey: false, timestamps: true }
