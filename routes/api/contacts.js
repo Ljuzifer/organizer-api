@@ -1,25 +1,61 @@
-const express = require('express')
+const express = require("express");
+const mode = require("../../controllers/contactMode");
+const {
+    isValidId,
+    validateMethod,
+    authentication,
+    ownerChecker,
+} = require("../../middlewares");
+const { ValidationSchema, PatchSchema } = require("../../schemas/Validation");
 
-const router = express.Router()
+const router = express.Router();
+const parseJSON = express.json();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/", parseJSON, authentication, mode.getAll);
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get(
+    "/:contactId",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.getById,
+);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.post(
+    "/",
+    parseJSON,
+    authentication,
+    validateMethod(ValidationSchema),
+    mode.postItem,
+);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.delete(
+    "/:contactId",
+    authentication,
+    isValidId,
+    ownerChecker,
+    mode.deleteItem,
+);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.put(
+    "/:contactId",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    validateMethod(ValidationSchema),
+    mode.putItem,
+);
 
-module.exports = router
+router.patch(
+    "/:contactId/favorite",
+    parseJSON,
+    authentication,
+    isValidId,
+    ownerChecker,
+    validateMethod(PatchSchema),
+    mode.patchItem,
+);
+
+module.exports = router;
