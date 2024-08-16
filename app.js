@@ -2,10 +2,10 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const { HttpError } = require("./helpers");
-require("dotenv").config();
 const multer = require("multer");
+require("dotenv").config();
 
-const { authRouter, contactsRouter } = require("./routes/api");
+const { authRouter, contactsRouter, tasksRouter } = require("./routes/api");
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.use(express.static("public"));
 
 app.use("/users", authRouter);
 app.use("/api/contacts", contactsRouter);
+app.use("/api/tasks", tasksRouter);
 
 app.use((req, res) => {
     res.status(404).json({ message: "Not found" });
@@ -29,6 +30,8 @@ app.use((err, req, res, next) => {
             next(HttpError(400, "Field must be named -> avatar"));
         }
     }
+    console.log(err);
+
     res.status(err.status || 500).json({ message: err.message });
 });
 

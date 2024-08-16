@@ -87,8 +87,11 @@ async function resendConfirmEmail(req, res) {
 // signin //
 async function login(req, res) {
     const { email, password } = req.body;
+    const mail = email.toLowerCase();
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ mail });
+    console.log(user);
+
     if (!user) {
         throw HttpError(401, "Email or password are incorrect");
     }
@@ -111,7 +114,12 @@ async function login(req, res) {
 
     res.json({
         token,
-        user: { email: user.email, subscription: user.subscription },
+        user: {
+            name: user.name,
+            email: user.email,
+            avatar: user.avatarURL,
+            subscription: user.subscription,
+        },
     });
 }
 
@@ -125,9 +133,9 @@ async function logout(req, res) {
 }
 
 async function current(req, res) {
-    const { email, subscription } = req.user;
+    const { name, email, subscription } = req.user;
 
-    res.json({ email, subscription });
+    res.json({ name, email, subscription });
 }
 
 async function subscription(req, res) {

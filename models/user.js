@@ -6,7 +6,7 @@ const userSchema = new Schema(
     {
         name: {
             type: String,
-            // required: [true, "Set your name"],
+            required: [true, "Set your name"],
         },
         email: {
             type: String,
@@ -44,8 +44,16 @@ const userSchema = new Schema(
             default: "",
         },
     },
-    { versionKey: false, timestamps: true },
+    { versionKey: false, timestamps: true }
 );
+
+userSchema.pre("save", function (next) {
+    const { email } = this;
+    const mail = email.toLocaleLowerCase();
+    this.email = mail;
+
+    next();
+});
 
 userSchema.post("save", MongooseError);
 
