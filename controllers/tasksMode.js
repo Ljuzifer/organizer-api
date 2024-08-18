@@ -12,7 +12,7 @@ async function getAll(req, res, __) {
         skip,
         limit,
     })
-        .populate("owner")
+        // .populate("owner", "name")
         .exec();
 
     res.status(200).json(answer);
